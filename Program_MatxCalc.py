@@ -1,15 +1,20 @@
 #IMPORTING NECESSARY LIBRARIES
 import numpy as np
 from sympy import Matrix
-from necessary_functions import matrix_extractor, dim_check_add, dim_check_mul, add_multiply, inverse, is_square, diagonalise
+from Class_MtxCalc import MatrixCalculator as mc
 import scipy.linalg as sclinalg
 
 
 def main():   
-    print("Welcome to the Matrix Calculator")
-    intro_text = "Enter an element of a matrix, separarted by space, in the input field, so that a row is entered at once\nEnter x to stop entering the rows for a matrix\nEnter u to undo the last entry\n"
+    intro_text = """Enter an element of a matrix, separarted by space, in the input field, so that a row is entered at once
+    Enter x to stop entering the rows for a matrix
+    Enter u to undo the last entry\n"""
+    invalid_text = "Invalid choice. Enter again"
 
-    while True: #flag = all_operations
+    print()
+    print("Welcome to the Matrix Calculator")
+
+    while True: # flag = all_operations
 
         # Calculations that can be performed
         print("Choose any of the following options")
@@ -25,91 +30,66 @@ def main():
         print()
         choice = int(input())
 
-        #LOGIC FOR CHOICES
+        # LOGIC FOR CHOICES
         while True:     #flag = same_operation
-            if choice == 1: #Addition
-                print("ADDITION")
+            if choice == 1: # Addition
+                print("You chose Addition")
                 print()
-                result = add_multiply(dim_checker=dim_check_add, is_add=True)
+                result = mc.add_multiply(dim_checker=mc.dim_check_add, is_add=True)
 
-            elif choice == 2:   #Multiplication
-                print("MULTIPLICATION")
+            elif choice == 2:   # Multiplication
+                print("You chose Multiplication")
                 print()
-                result = add_multiply(dim_checker=dim_check_mul, is_add=False)
+                result = mc.add_multiply(dim_checker=mc.dim_check_mul, is_add=False)
 
             elif choice in (i for i in range(3,9)):
 
                 #Introduction text, extracting and displaying matrix to the user. Removes redundancy of code
                 print(intro_text)
                 print()
-                mtx = matrix_extractor()
-                print(mtx)
+                mtx = mc.matrix_extractor()
+                print(f"Matrix: \n{mtx}")
                 print()
 
-                if choice == 3: #Inverse
-                    print("INVERSE")
+                mtx_instance = mc(mtx)  # Creating an instance of MatrixCalculator class
+
+                if choice == 3:     # Inverse
+                    print("You chose to compute Inverse")
                     print()
-                    result = inverse(mtx)
+                    result = mtx_instance.inverse()
 
-                elif choice == 4:   #Determinant
-                    print("DETERMINANT")
+                elif choice == 4:   # Determinant
+                    print("You chose to evaluate Determinant")
                     print()
+                    result = mtx_instance.determinant()
 
-                    if is_square(mtx):
-                        result = np.linalg.det(mtx)
-                    else:
-                        print("The matrix is not square so determinant cannot be calculated")
-
-                elif choice == 5:   #Diagonalisation
-                    print("DIAGONALISATION")
+                elif choice == 5:   # Diagonalisation
+                    print("You chose to Diagonalise")
                     print()
-                    result = diagonalise(mtx) # type: ignore
+                    result = mtx_instance.diagonalise()
 
-                elif choice == 6: #Eigenvalues/eigenvectors
-                    print("EIGENVALUES/EIGENVECTORS")
+                elif choice == 6:   # Eigenvalues/eigenvectors
+                    print("You chose to find Eigenvalues/Eigenvectors")
                     print()
+                    eigen_data = mtx_instance.eigen()
+                    result = ""
 
-                    if is_square(mtx):
-                        mtx = Matrix(mtx)
-                        eigen_data = mtx.eigenvects()   #Each element of eigen_data = (eigenvals, algebraic_multiplicity, list(Matrix(eigenvectors)))
-                        result = ''
+                    # Extracting the eigenvalues/eigenvectors and displaying in simplified format
+                    for i in range(len(eigen_data)):
+                        eigenvals = eigen_data[i][0]
+                        eigenvects = eigen_data[i][1]
+        
+                        val = f"Eigenvalue {i+1}: {eigenvals}\n"
+                        vect = f"Eigenvector {i+1}: {eigenvects}\n"
+                        result = val + vect + '\n'
 
-                        for i in range(len(eigen_data)):
-                            eigenvals = eigen_data[i][0]
-                            eigenvects = eigen_data[i][2]
-                            eigenvects = np.array(eigenvects[0].tolist())   #Array of eigenvectors
-
-                            val = f"Eigenvalue {i+1}: {eigenvals}\n"
-                            vect = f"Eigenvector {i+1}: {eigenvals}\n"
-                            result = val + vect + '\n'
-
-                    else:
-                        result = "Eigenvalues/eigenvectors cannot be computed for non-square matrices"
-
-                elif choice == 7:   #Powers of mtx
-                    print("POWERS OF A MATRIX")
+                elif choice == 7:   # Powers of mtx
+                    print("You choose to compute Powers of Matrix")
                     print()
+                    pow = int(input("Enter the power to which you want to raise the matrix: "))
+                    result = mtx_instance.power(pow)
 
-                    if is_square(mtx): #type: ignore to ignore unbound warning on mtx
-                        pow = int(input("Enter the power of the matrix: "))
-                        result = np.linalg.matrix_power(mtx, pow) #type: ignore
-
-                        #FINDING POWERS BY DIAGONALISATION
-                        # eigenvals, eigenvects = np.linalg.eig(mtx)
-
-                        # mtx = PDP^(-1)     mtx^n = P(D^n)P^(-1)
-                        # D = np.diag(eigenvals)
-                        # P = eigenvects
-                        # P_inv = np.linalg.inv(P)
-                        # D_pow = np.linalg.matrix_power(D, pow)
-
-                        # result = P@D_pow@P_inv
-
-                    else:
-                        print("Powers of non-sqaure matrices cannot be calculated")
-
-                else:   #Functions on matrices
-
+                else:   # Functions on matrices
                     while True:     #flag = all_func
                         print("Choose from one of the following operations: ")
                         print("(1) sin")
@@ -118,7 +98,7 @@ def main():
                         print("(4) logarithm")
                         print("(5) sinh")
                         print("(6) cosh")
-
+                        print()
                         option = int(input())
                         print()
 
@@ -136,10 +116,10 @@ def main():
                             elif option == 6:
                                 result = sclinalg.coshm(mtx) #type: ignore
                             else:
-                                print("WRONG INPUT! Returning to menu")
+                                print(invalid_text)
                                 break   #Returns to all_func
 
-                            print("Enter:")
+                            print("What do you want to do next?")
                             print("'s' for performing the same function on matrix")
                             print("'a' for choosing from all the available functions on matrix")
                             print("'e' to exit from this category of operations")
