@@ -1,0 +1,9 @@
+name: matrix-calculator
+channels:
+  - defaults
+  - conda-forge
+dependencies:
+  - python=3.12  # or your version
+  - numpy
+  - sympy
+  - scipy
