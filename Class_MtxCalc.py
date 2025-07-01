@@ -6,8 +6,8 @@ from typing import Tuple, List
 
 class MatrixCalculator:
     intro_text = """Enter a row of a matrix, separarted by space, in the input field
-    Enter x to stop entering the rows for a matrix
-    Enter u to undo the last entry\n"""
+Enter x to stop entering the rows for a matrix
+Enter u to undo the last entry\n"""
 
     def __init__(self, matrix: ndarray):
         """
@@ -171,7 +171,7 @@ class MatrixCalculator:
 
     # Function for Addition/Multiplication of matrices
     @staticmethod
-    def add_multiply(dim_checker: function, is_add: bool) -> ndarray:
+    def add_multiply(dim_checker, is_add: bool) -> ndarray:
         """
         Function for adding/multiplying matrices
 
