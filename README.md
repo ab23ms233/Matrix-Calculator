@@ -12,7 +12,9 @@ Matrix-Calculator/
 ├── Program_MtxCalc.py            # CLI program that interacts with the user
 ├── Matrix_Calculator_Demo.ipynb  # Jupyter notebook demonstrating usage of each method
 ├── requirements.txt              # Dependencies for pip users
-└── environment.yaml              # Conda environment file
+├── environment.yaml              # Conda environment file
+└── .gitignore                    # Ignores unnecessary files that are auto-generated locally
+
 ```
 
 ---
